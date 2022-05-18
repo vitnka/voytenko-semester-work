@@ -46,8 +46,17 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
+    public User getUser(){
+        return user;
+    }
+
     @Override
     public boolean isEnabled() {
         return user.getState().equals(User.State.CONFIRMED);
     }
+
+    public boolean hasRole(String role) {
+        return user.getRole().toString().equals(role);
+    }
+
 }

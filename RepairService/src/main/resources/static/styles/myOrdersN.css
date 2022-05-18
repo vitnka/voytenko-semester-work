@@ -1,0 +1,41 @@
+body, h1{
+    margin: 0;
+    padding: 0;
+}
+
+.content{
+    margin: 30px auto;
+    max-width: 1300px;
+}
+
+.top{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top h1{
+    font-size: 40px;
+}
+
+.top input{
+    width: 250px;
+    border: 1px solid #333333;
+    border-radius: 5px;
+    height: 30px;
+}
+
+.orders{
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.orders .order{
+    border: 1px solid #333333;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 20px;
+}

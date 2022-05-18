@@ -1,14 +1,13 @@
 package com.voytenko.dto;
 
-import com.voytenko.models.Client;
 import com.voytenko.models.Order;
 import com.voytenko.models.Review;
+import com.voytenko.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,8 +19,8 @@ import java.util.stream.Collectors;
 public class ReviewDto {
 
     private Integer id;
-    private Client client;
-    private Order order;
+    private User user;
+    private OrderDto order;
     private Timestamp date;
     private String comment;
     private int rating;
@@ -29,8 +28,8 @@ public class ReviewDto {
     public static ReviewDto from(Review review) {
         return ReviewDto.builder()
                 .id(review.getId())
-                .client(review.getClient())
-                .order(review.getOrder())
+                .user(review.getUser())
+                .order(OrderDto.from(review.getOrder()))
                 .date(review.getDate())
                 .comment(review.getComment())
                 .rating(review.getRating())

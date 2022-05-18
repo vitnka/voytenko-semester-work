@@ -1,8 +1,8 @@
 package com.voytenko.repositories;
 
 import com.voytenko.models.Client;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public interface ClientRepository extends UserBaseRepository<Client>  {
+public interface ClientRepository extends JpaRepository<Client, Integer> {
+
 }

@@ -1,8 +1,10 @@
 package com.voytenko.models;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Data
@@ -18,21 +20,28 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    public enum Status {
+        NOT_STARTED, IN_PROGRESS, COMPLETED
+    }
+
     @Column(name = "order_status")
-    private String orderStatus;
+    @Enumerated(value = EnumType.STRING)
+    private Status orderStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id")
-    private Client client;
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "repairman_id")
-    private Repairman repairman;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,
+            fetch = FetchType.EAGER)
+    public Review reviews;
 
-    @ManyToOne()
-    private Category category;
+    @Column(name = "item_name")
+    private String itemName;
 
     private String reason;
 
     private String comment;
+
+
 }

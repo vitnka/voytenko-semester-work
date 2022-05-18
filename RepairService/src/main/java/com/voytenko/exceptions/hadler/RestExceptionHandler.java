@@ -2,8 +2,12 @@ package com.voytenko.exceptions.hadler;
 
 import com.voytenko.dto.ExceptionDto;
 import com.voytenko.dto.ValidationErrorDto;
-import com.voytenko.exceptions.ReviewNotFoundException;
+import com.voytenko.exceptions.*;
+import com.voytenko.models.User;
+import com.voytenko.security.details.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,21 +20,35 @@ public class RestExceptionHandler {
 
     private final String ENTITY_NOT_FOUND_STATUS = "404";
 
-    @ExceptionHandler(ReviewNotFoundException.class)
-    public ResponseEntity<Object> handleFavoritesItemException(ReviewNotFoundException exception) {
-        return ResponseEntity.status(404)
-                .body(ExceptionDto.builder().message(exception.getMessage()).error(ENTITY_NOT_FOUND_STATUS).build());
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public String handleEmailAlreadyExistsException() {
+        return "redirect:/signIn?exists";
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<ValidationErrorDto>> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
-        List<ValidationErrorDto> errors = new ArrayList<>();
-
-        exception.getBindingResult().getAllErrors().forEach(
-                (error) -> errors.add(ValidationErrorDto.builder().field(error.getObjectName()).error(error.getDefaultMessage()).build())
-        );
-
-        return ResponseEntity.status(400)
-                .body(errors);
+    @ExceptionHandler(UserEmailNotFoundException.class)
+    public String handleUserEmailNotFoundException(UserEmailNotFoundException exception, Model model, Authentication authentication) {
+        return addExceptionOnPage(model, authentication, exception.getMessage());
     }
+
+
+    @ExceptionHandler(EmptyMessageException.class)
+    public String handleEmptyMessageException(EmptyMessageException exception, Model model, Authentication authentication) {
+        return addExceptionOnPage(model, authentication, exception.getMessage());
+    }
+
+    private String addExceptionOnPage(Model model, Authentication authentication, String message) {
+        User user = ((UserDetailsImpl) authentication.getPrincipal()).getUser();
+
+        if (user.getRole().toString().equals("ADMIN")) {
+            model.addAttribute("isAdmin", true);
+        } else {
+            model.addAttribute("isAdmin", false);
+        }
+
+        model.addAttribute("error", message);
+        model.addAttribute("canReply", true);
+
+        return "message";
+    }
+
 }

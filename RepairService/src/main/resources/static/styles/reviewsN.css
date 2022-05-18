@@ -1,0 +1,52 @@
+body, h1{
+    margin: 0;
+    padding: 0;
+}
+
+.content{
+    margin: 30px auto;
+    max-width: 1300px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.left{
+    display: flex;
+    flex-direction: column;
+    max-width: 700px;
+}
+
+.left h1{
+    margin-bottom: 20px;
+}
+
+.left .review{
+    margin-bottom: 10px;
+    border: 1px solid #333333;
+    border-radius: 5px;
+    width: 700px;
+    padding: 20px;
+}
+
+.right{
+    display: flex;
+    flex-direction: column;
+}
+
+.right h1{
+    margin-bottom: 20px;
+}
+
+.right form{
+    display: flex;
+    flex-direction: column;
+}
+
+.right form input{
+    width: 250px;
+    height: 30px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}

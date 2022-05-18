@@ -1,44 +1,57 @@
 package com.voytenko.controllers;
 
-import com.voytenko.dto.ReviewDto;
-import com.voytenko.dto.ReviewRequest;
+import com.voytenko.dto.ReviewForm;
 import com.voytenko.models.User;
+import com.voytenko.security.details.UserDetailsImpl;
 import com.voytenko.services.ReviewService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
 
-@RequiredArgsConstructor
-@RestController
-@RequestMapping("/review")
+@Controller
+@RequestMapping("/reviews")
 public class ReviewController {
 
-    private ReviewService reviewService;
+    private final ReviewService reviewService;
 
-    @GetMapping("/{order_id}")
-    public ResponseEntity<ReviewDto> getReviewByOrder(@PathVariable("order_id") Integer orderId){
-        return ResponseEntity.ok().body(reviewService.getReviewByOrderId(orderId));
+    @Autowired
+    public ReviewController(ReviewService reviewService) {
+        this.reviewService = reviewService;
     }
 
     @GetMapping()
-    public ResponseEntity<List<ReviewDto>> getReviewByClient(Authentication authentication){
-        Integer clientId = ((User) authentication.getPrincipal()).getId();
-        return ResponseEntity.ok().body(reviewService.getReviewByClient(clientId));
+    public String getReviews(Authentication authentication, Model model) {
+        User user = ((UserDetailsImpl) authentication.getPrincipal()).getUser();
+        model.addAttribute("reviews", reviewService.findAll());
+        model.addAttribute("userId", user.getId());
+        return "reviews";
     }
 
-    @PostMapping("add")
-    public ResponseEntity<ReviewDto> addReview(@RequestBody ReviewRequest review, Authentication authentication){
-        Integer clientId = ((User) authentication.getPrincipal()).getId();
-        return ResponseEntity.ok().body(reviewService.addReview(review, clientId));
+
+    @PostMapping("/add/{order_id}")
+    public String addReview(@PathVariable("order_id") Integer orderId, ReviewForm review, Authentication authentication) {
+        User client = ((UserDetailsImpl) authentication.getPrincipal()).getUser();
+        reviewService.addReview(review, client.getId(), orderId);
+        return "redirect:/reviews";
     }
 
-    @DeleteMapping("/remove/{review_id}")
-    public ResponseEntity<?> addReview(@PathVariable("review_id") Integer reviewId){
+    @PostMapping("/remove/{review_id}")
+    public String deleteReview(@PathVariable("review_id") Integer reviewId) {
         reviewService.deleteReview(reviewId);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        return "redirect:/reviews";
+    }
+
+    @GetMapping("/completed")
+    public String getCompletedOrderReview(Model model, Authentication authentication){
+        User user = ((UserDetailsImpl) authentication.getPrincipal()).getUser();
+        model.addAttribute("reviews", reviewService.getCompletedOrderReview());
+        model.addAttribute("userId", user.getId());
+        return "reviews";
     }
 }

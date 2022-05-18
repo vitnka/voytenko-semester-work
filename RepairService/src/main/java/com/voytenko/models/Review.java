@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
 @Data
@@ -20,9 +19,9 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "client_id")
-    private Client client;
+    private User user;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;
 

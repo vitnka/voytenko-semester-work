@@ -1,0 +1,77 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="Анастасия (generated)" id="1652822469198-1">
+        <createTable tableName="category">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="category_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Анастасия (generated)" id="1652822469198-2">
+        <createTable tableName="client">
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="profile_img" type="VARCHAR(255)"/>
+            <column name="id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Анастасия (generated)" id="1652822469198-3">
+        <createTable tableName="orders">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="orders_pkey"/>
+            </column>
+            <column name="comment" type="VARCHAR(255)"/>
+            <column name="item_name" type="VARCHAR(255)"/>
+            <column name="order_status" type="VARCHAR(255)"/>
+            <column name="reason" type="VARCHAR(255)"/>
+            <column name="user_id" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Анастасия (generated)" id="1652822469198-4">
+        <createTable tableName="review">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="review_pkey"/>
+            </column>
+            <column name="comment" type="VARCHAR(255)"/>
+            <column name="date" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="rating" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_id" type="INT"/>
+            <column name="client_id" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Анастасия (generated)" id="1652822469198-5">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="users_pkey"/>
+            </column>
+            <column name="confirm_code" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="role" type="VARCHAR(255)"/>
+            <column name="state" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Анастасия (generated)" id="1652822469198-6">
+        <addPrimaryKey columnNames="id" constraintName="client_pkey" tableName="client"/>
+    </changeSet>
+    <changeSet author="Анастасия (generated)" id="1652822469198-7">
+        <addUniqueConstraint columnNames="email" constraintName="uk_6dotkott2kjsp8vw4d0m25fb7" tableName="users"/>
+    </changeSet>
+    <changeSet author="Анастасия (generated)" id="1652822469198-8">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="orders" constraintName="fk32ql8ubntj5uh44ph9659tiih" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="Анастасия (generated)" id="1652822469198-9">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="client" constraintName="fk70dfjxvqnmgixqht3vea50voj" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="Анастасия (generated)" id="1652822469198-10">
+        <addForeignKeyConstraint baseColumnNames="client_id" baseTableName="review" constraintName="fkmrowfyv53awvctac2ronbq8gb" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="Анастасия (generated)" id="1652822469198-11">
+        <addForeignKeyConstraint baseColumnNames="order_id" baseTableName="review" constraintName="fknkc5s3da46cbx8oeqrfhnm7es" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="orders"/>
+    </changeSet>
+</databaseChangeLog>

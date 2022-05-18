@@ -1,17 +1,20 @@
 package com.voytenko.services;
 
 import com.voytenko.dto.ReviewDto;
-import com.voytenko.dto.ReviewRequest;
+import com.voytenko.dto.ReviewForm;
+import com.voytenko.models.Review;
 
 import java.util.List;
 
 public interface ReviewService {
 
-    ReviewDto getReviewByOrderId(Integer orderId);
+    List<ReviewDto> findAll();
 
-    List<ReviewDto> getReviewByClient(Integer clientId);
-
-    ReviewDto addReview(ReviewRequest review, Integer clientId);
+    ReviewDto addReview(ReviewForm review, Integer clientId, Integer orderId);
 
     void deleteReview(Integer reviewId);
+
+
+    List<ReviewDto> getCompletedOrderReview();
 }
+

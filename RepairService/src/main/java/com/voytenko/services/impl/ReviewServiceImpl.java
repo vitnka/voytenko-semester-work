@@ -1,12 +1,13 @@
 package com.voytenko.services.impl;
 
 import com.voytenko.dto.ReviewDto;
-import com.voytenko.dto.ReviewRequest;
-import com.voytenko.exceptions.ReviewNotFoundException;
-import com.voytenko.models.Client;
+import com.voytenko.dto.ReviewForm;
+import com.voytenko.models.Order;
 import com.voytenko.models.Review;
-import com.voytenko.repositories.ClientRepository;
+import com.voytenko.models.User;
+import com.voytenko.repositories.OrderRepository;
 import com.voytenko.repositories.ReviewRepository;
+import com.voytenko.repositories.UserRepository;
 import com.voytenko.services.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,26 +22,23 @@ import java.util.Optional;
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final ClientRepository clientRepository;
+    private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
 
     @Override
-    public ReviewDto getReviewByOrderId(Integer orderId) {
-        return ReviewDto.from(reviewRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new ReviewNotFoundException(orderId)));
+    public List<ReviewDto> findAll() {
+        return ReviewDto.from(reviewRepository.findAll());
     }
 
     @Override
-    public List<ReviewDto> getReviewByClient(Integer clientId) {
-        return ReviewDto.from(reviewRepository.findByClientId(clientId));
-    }
+    public ReviewDto addReview(ReviewForm reviewRequest, Integer clientId, Integer orderId) {
 
-    @Override
-    public ReviewDto addReview(ReviewRequest reviewRequest, Integer clientId) {
-
-        Client client = clientRepository.getById(clientId);
+        User user = userRepository.getById(clientId);
+        Order order = orderRepository.getById(orderId);
 
         Review review = Review.builder()
-                .client(client)
+                .user(user)
+                .order(order)
                 .comment(reviewRequest.getComment())
                 .date(Timestamp.valueOf(LocalDateTime.now()))
                 .rating(reviewRequest.getRating())
@@ -56,5 +54,10 @@ public class ReviewServiceImpl implements ReviewService {
 
         review.ifPresent(reviewRepository::delete);
 
+    }
+
+    @Override
+    public List<ReviewDto> getCompletedOrderReview() {
+        return ReviewDto.from(reviewRepository.findAllByOrderCompleted());
     }
 }
